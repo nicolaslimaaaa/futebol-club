@@ -4,8 +4,8 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import SequelizeTeam from '../database/models/SequelizeTeam';
-import { teamsFromController, teamsFromDB } from './mocks/team.mocks'
+import TeamModel from '../database/models/TeamModel';
+import { teamsFromDB } from './mocks/team.mocks'
 
 import { Response } from 'superagent';
 
@@ -45,12 +45,12 @@ describe('GET /teams', () => {
   });
 
   it('Testa se ao fazer uma requisição do tipo GET para a rota /teams é retornado um array de times', async function () {
-    const mockFindAllReturn = SequelizeTeam.bulkBuild(teamsFromDB)
-    sinon.stub(SequelizeTeam, "findAll").resolves(mockFindAllReturn)
+    const mockFindAllReturn = TeamModel.bulkBuild(teamsFromDB);
+    sinon.stub(TeamModel, "findAll").resolves(mockFindAllReturn);
 
-    await chai.request(app).get('/teams').send(teamsFromController)
+    const { status, body } = await chai.request(app).get('/teams');
 
-    expect(teamsFromController.status).to.be.equal(200);
-    expect(teamsFromController.data).to.be.deep.equal(teamsFromDB);
+    expect(status).to.be.equal(200);
+    expect(body).to.be.deep.equal(teamsFromDB);
   });
 });

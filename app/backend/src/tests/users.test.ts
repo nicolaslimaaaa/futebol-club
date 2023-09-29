@@ -7,7 +7,7 @@ import { app } from '../app';
 import UserModel from '../database/models/UserModel'
 
 import { Response } from 'superagent';
-import { loginUser, userCreate } from './mocks/user.mock';
+import { invalidEmailLoginUser, invalidPasswordLoginUser, loginUser, loginUserWithoutEmail, loginUserWithoutPassword, messageAllFieldMustBeFilled, messageInvalidEmailOrPassword, notFoundEmailLoginUser, notFoundPasswordLoginUser, validUserFromDB } from './mocks/user.mock';
 
 chai.use(chaiHttp);
 
@@ -44,14 +44,80 @@ describe('POST /login', () => {
     sinon.restore()
   });
 
-  it('Testa se ao fazer uma requisição do tipo POST para a rota /login é possível fazer login com sucesso', async function () {
-    const mockCreateReturn = UserModel.build(userCreate);
+  it('Testa se é possível fazer login com sucesso', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
 
-    sinon.stub(UserModel, "create").resolves(mockCreateReturn);
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
 
     const { status, body } = await chai.request(app).post('/login').send(loginUser);
 
     expect(status).to.be.equal(200);
     expect(body).to.have.property('token');
+  });
+
+  it('Testa se não é possível fazer login sem email', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).post('/login').send(loginUserWithoutEmail);
+
+    expect(status).to.be.equal(400);
+    expect(body).to.be.deep.equal(messageAllFieldMustBeFilled);
+  });
+
+  it('Testa se não é possível fazer login sem password', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).post('/login').send(loginUserWithoutPassword);
+
+    expect(status).to.be.equal(400);
+    expect(body).to.be.deep.equal(messageAllFieldMustBeFilled);
+  });
+
+  it('Testa se não é possível fazer login com um email não cadastrado', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).post('/login').send(notFoundEmailLoginUser);
+
+    expect(status).to.be.equal(401);
+    expect(body).to.be.deep.equal(messageInvalidEmailOrPassword);
+  });
+
+  it('Testa se não é possível fazer login com um email inválido', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).post('/login').send(invalidEmailLoginUser);
+
+    expect(status).to.be.equal(401);
+    expect(body).to.be.deep.equal(messageInvalidEmailOrPassword);
+  });
+
+  it('Testa se não é possível fazer login com uma senha não cadastrada', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).post('/login').send(notFoundPasswordLoginUser);
+
+    expect(status).to.be.equal(401);
+    expect(body).to.be.deep.equal(messageInvalidEmailOrPassword);
+  });
+
+  it('Testa se não é possível fazer login com uma senha inválida', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).post('/login').send(invalidPasswordLoginUser);
+
+    expect(status).to.be.equal(401);
+    expect(body).to.be.deep.equal(messageInvalidEmailOrPassword);
   });
 });

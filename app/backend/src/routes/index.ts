@@ -6,5 +6,6 @@ const router = Router();
 
 router.use('/teams', team);
 router.use('/login', user);
+router.use('/login/role', user);
 
 export default router;

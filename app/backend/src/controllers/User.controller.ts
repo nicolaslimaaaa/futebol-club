@@ -12,4 +12,10 @@ export default class UserController {
 
     return res.status(mapStatusHTTP(status)).json(data);
   }
+
+  static async loginRole(req: Request, res: Response) {
+    const { status, data } = await UserService.loginRole(req.body);
+
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }

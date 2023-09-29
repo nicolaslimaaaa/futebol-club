@@ -11,4 +11,9 @@ router.post(
   (req, res) => userController.login(req, res),
 );
 
+router.get(
+  '/role',
+  Validations.authMiddleware,
+  (req, res) => User.loginRole(req, res),
+);
 export default router;

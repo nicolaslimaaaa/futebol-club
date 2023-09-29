@@ -7,7 +7,7 @@ export default interface ServiceResponse<T> {
 
 export interface LoginResponse {
   status: Code,
-  data: { message: string } | { token: string }
+  data: { message: string } | { token: string } | { role: string }
 }
 
 export const invalidValuesResponse: LoginResponse = {

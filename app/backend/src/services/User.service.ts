@@ -1,10 +1,11 @@
 import { ModelStatic } from 'sequelize';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import IUserPayload from '../Interfaces/users/UserPayload';
+import envArgs from '../envArgs';
 import IUserLogin from '../Interfaces/users/UserLogin';
 import UserModel from '../database/models/UserModel';
 import { LoginResponse, invalidValuesResponse } from '../Interfaces/ServiceResponse';
-import env from '../envArgs';
 import validateInputLogin from './Validations/validateInputLogin';
 
 export default class UserService {
@@ -27,8 +28,14 @@ export default class UserService {
       role: user.role,
     };
 
-    const token = jwt.sign(payloadForToken, env.jwtSecret);
+    const token = jwt.sign(payloadForToken, envArgs.jwtSecret);
 
     return { status: 'SUCCESSFUL', data: { token } };
+  }
+
+  static async loginRole(payload: IUserPayload): Promise<LoginResponse> {
+    const { role } = payload;
+
+    return { status: 'SUCCESSFUL', data: { role } };
   }
 }

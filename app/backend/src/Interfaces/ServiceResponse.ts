@@ -9,3 +9,8 @@ export interface LoginResponse {
   status: Code,
   data: { message: string } | { token: string }
 }
+
+export const invalidValuesResponse: LoginResponse = {
+  status: 'INVALID_VALUES',
+  data: { message: 'Invalid email or password' },
+};

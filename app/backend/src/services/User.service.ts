@@ -17,18 +17,14 @@ export default class UserService {
     if (error) return { status: error.status, data: error.data };
 
     const user = await this._teamModel.findOne({ where: { email: dataUser.email } });
-    if (!user) {
-      return invalidValuesResponse;
-    }
+    if (!user) return invalidValuesResponse;
 
     const isValidPassword = await bcrypt.compareSync(dataUser.password, user.password);
-    if (!isValidPassword) {
-      return invalidValuesResponse;
-    }
+    if (!isValidPassword) return invalidValuesResponse;
 
     const payloadForToken = {
-      id: user?.id,
-      role: user?.role,
+      id: user.id,
+      role: user.role,
     };
 
     const token = jwt.sign(payloadForToken, env.jwtSecret);

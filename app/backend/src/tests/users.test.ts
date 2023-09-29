@@ -7,39 +7,29 @@ import { app } from '../app';
 import UserModel from '../database/models/UserModel'
 
 import { Response } from 'superagent';
-import { invalidEmailLoginUser, invalidPasswordLoginUser, loginUser, loginUserWithoutEmail, loginUserWithoutPassword, messageAllFieldMustBeFilled, messageInvalidEmailOrPassword, notFoundEmailLoginUser, notFoundPasswordLoginUser, validUserFromDB } from './mocks/user.mock';
+import {
+  authorization,
+  invalidAuthorization,
+  invalidEmailLoginUser,
+  invalidPasswordLoginUser,
+  loginUser,
+  loginUserWithoutEmail,
+  loginUserWithoutPassword,
+  messageAllFieldMustBeFilled,
+  messageInvalidEmailOrPassword,
+  messageTokenInvalid,
+  messageTokenNotFound,
+  notFoundEmailLoginUser,
+  notFoundPasswordLoginUser,
+  returnTokenValid,
+  validUserFromDB
+} from './mocks/user.mock';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
 describe('POST /login', () => {
-  /**
-   * Exemplo do uso de stubs com tipos
-   */
-
-  // let chaiHttpResponse: Response;
-
-  // before(async () => {
-  //   sinon
-  //     .stub(Example, "findOne")
-  //     .resolves({
-  //       ...<Seu mock>
-  //     } as Example);
-  // });
-
-  // after(()=>{
-  //   (Example.findOne as sinon.SinonStub).restore();
-  // })
-
-  // it('...', async () => {
-  //   chaiHttpResponse = await chai
-  //      .request(app)
-  //      ...
-
-  //   expect(...)
-  // });
-
   beforeEach(function () {
     sinon.restore()
   });
@@ -117,5 +107,44 @@ describe('POST /login', () => {
 
     expect(status).to.be.equal(401);
     expect(body).to.be.deep.equal(messageInvalidEmailOrPassword);
+  });
+});
+
+describe('GET /login/role', () => {
+  beforeEach(function () {
+    sinon.restore()
+  });
+
+  it('Testa que não é possível retornar um objeto com o tipo de usuário, sem um token', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).get('/login/role').send({ header: authorization });
+
+    expect(status).to.be.equal(401);
+    expect(body).to.be.deep.equal(messageTokenNotFound);
+  });
+
+  it('Testa que não é possível retornar um objeto com o tipo de usuário, com um token inválido', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).get('/login/role').send({ header: invalidAuthorization });
+
+    expect(status).to.be.equal(401);
+    expect(body).to.be.deep.equal(messageTokenInvalid);
+  });
+
+  it('Testa que é possível retornar um objeto com o tipo de usuário', async function () {
+    const mockFindOndeReturn = UserModel.build(validUserFromDB);
+
+    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+
+    const { status, body } = await chai.request(app).get('/login/role').send({ header: authorization });
+
+    expect(status).to.be.equal(200);
+    expect(body).to.be.deep.equal(returnTokenValid);
   });
 });

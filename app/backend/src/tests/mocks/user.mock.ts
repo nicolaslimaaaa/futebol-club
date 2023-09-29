@@ -55,3 +55,21 @@ export const invalidPasswordLoginUser = {
 export const messageInvalidEmailOrPassword = {
   "message": "Invalid email or password"
 }
+
+export const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjk2MDE2NjU2fQ.50wNsjBatVKscjUekOQlq9GIyBI0FvOQ7sZzPC0swlA';
+
+export const authorization = `Bearer ${validToken}`
+
+export const invalidAuthorization = 'Bearer tokenInvalido'
+
+export const messageTokenNotFound = {
+  "message": "Token not found"
+}
+
+export const messageTokenInvalid = {
+  "message": "Token must be a valid token"
+}
+
+export const returnTokenValid = {
+  "role": "admin"
+}

@@ -78,9 +78,7 @@ describe('POST /login', () => {
   });
 
   it('Testa se não é possível fazer login com um email não cadastrado', async function () {
-    const mockFindOndeReturn = UserModel.build(validUserFromDB);
-
-    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
+    sinon.stub(UserModel, "findOne").resolves();
 
     const { status, body } = await chai.request(app).post('/login').send(notFoundEmailLoginUser);
 

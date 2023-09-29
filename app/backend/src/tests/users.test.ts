@@ -9,6 +9,7 @@ import UserModel from '../database/models/UserModel'
 import { Response } from 'superagent';
 import {
   authorization,
+  authorizationWithoutToken,
   invalidAuthorization,
   invalidEmailLoginUser,
   invalidPasswordLoginUser,
@@ -116,33 +117,21 @@ describe('GET /login/role', () => {
   });
 
   it('Testa que não é possível retornar um objeto com o tipo de usuário, sem um token', async function () {
-    const mockFindOndeReturn = UserModel.build(validUserFromDB);
-
-    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
-
-    const { status, body } = await chai.request(app).get('/login/role').send({ header: authorization });
+    const { status, body } = await chai.request(app).get('/login/role').set('Authorization', authorizationWithoutToken);
 
     expect(status).to.be.equal(401);
     expect(body).to.be.deep.equal(messageTokenNotFound);
   });
 
   it('Testa que não é possível retornar um objeto com o tipo de usuário, com um token inválido', async function () {
-    const mockFindOndeReturn = UserModel.build(validUserFromDB);
-
-    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
-
-    const { status, body } = await chai.request(app).get('/login/role').send({ header: invalidAuthorization });
+    const { status, body } = await chai.request(app).get('/login/role').set('Authorization', invalidAuthorization);
 
     expect(status).to.be.equal(401);
     expect(body).to.be.deep.equal(messageTokenInvalid);
   });
 
   it('Testa que é possível retornar um objeto com o tipo de usuário', async function () {
-    const mockFindOndeReturn = UserModel.build(validUserFromDB);
-
-    sinon.stub(UserModel, "findOne").resolves(mockFindOndeReturn);
-
-    const { status, body } = await chai.request(app).get('/login/role').send({ header: authorization });
+    const { status, body } = await chai.request(app).get('/login/role').set('Authorization', authorization);
 
     expect(status).to.be.equal(200);
     expect(body).to.be.deep.equal(returnTokenValid);

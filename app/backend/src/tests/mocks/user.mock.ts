@@ -62,6 +62,8 @@ export const authorization = `Bearer ${validToken}`
 
 export const invalidAuthorization = 'Bearer tokenInvalido'
 
+export const authorizationWithoutToken = ''
+
 export const messageTokenNotFound = {
   "message": "Token not found"
 }

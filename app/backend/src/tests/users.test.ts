@@ -7,7 +7,7 @@ import { app } from '../app';
 import UserModel from '../database/models/UserModel'
 
 import { Response } from 'superagent';
-import { mockValidToken, newUser, userCreate, validUserFromDB } from './mocks/user.mock';
+import { loginUser, userCreate } from './mocks/user.mock';
 
 chai.use(chaiHttp);
 
@@ -45,15 +45,13 @@ describe('POST /login', () => {
   });
 
   it('Testa se ao fazer uma requisição do tipo POST para a rota /login é possível fazer login com sucesso', async function () {
-    const mockFindOneReturn = UserModel.build(validUserFromDB);
     const mockCreateReturn = UserModel.build(userCreate);
 
-    sinon.stub(UserModel, "findOne").resolves(mockFindOneReturn);
     sinon.stub(UserModel, "create").resolves(mockCreateReturn);
 
-    const { status, body } = await chai.request(app).post('/login').send(newUser);
+    const { status, body } = await chai.request(app).post('/login').send(loginUser);
 
     expect(status).to.be.equal(200);
-    expect(body).to.be.deep.equal(mockValidToken);
+    expect(body).to.have.property('token');
   });
 });

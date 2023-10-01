@@ -86,14 +86,14 @@ TeamModel.hasMany(MatchesModel, {
 
 MatchesModel.belongsTo(TeamModel, {
   foreignKey: 'homeTeamId',
-  as: 'teams',
+  as: 'homeTeam',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 
 MatchesModel.belongsTo(TeamModel, {
   foreignKey: 'awayTeamId',
-  as: 'teams',
+  as: 'awayTeam',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });

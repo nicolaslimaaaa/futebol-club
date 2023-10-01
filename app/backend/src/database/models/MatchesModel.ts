@@ -74,26 +74,24 @@ MatchesModel.init({
   * Associations 1:N devem ficar em uma das instâncias de modelo
   * */
 
-TeamModel.belongsToMany(MatchesModel, {
+TeamModel.hasMany(MatchesModel, {
   foreignKey: 'homeTeamId',
-  as: 'matches',
-  through: { model: TeamModel },
+  as: 'homeMatches',
 });
 
-TeamModel.belongsToMany(MatchesModel, {
+TeamModel.hasMany(MatchesModel, {
   foreignKey: 'awayTeamId',
-  as: 'matches',
-  through: { model: TeamModel },
+  as: 'awayMatches',
 });
 
-MatchesModel.hasOne(TeamModel, {
+MatchesModel.belongsTo(TeamModel, {
   foreignKey: 'homeTeamId',
   as: 'teams',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 
-MatchesModel.hasOne(TeamModel, {
+MatchesModel.belongsTo(TeamModel, {
   foreignKey: 'awayTeamId',
   as: 'teams',
   onDelete: 'CASCADE',

@@ -8,8 +8,8 @@ import {
 import db from '.';
 import TeamModel from './TeamModel';
 
-class MatchesModel extends Model<InferAttributes<MatchesModel>,
-InferCreationAttributes<MatchesModel>> {
+class MatcheModel extends Model<InferAttributes<MatcheModel>,
+InferCreationAttributes<MatcheModel>> {
   declare id: CreationOptional<number>;
 
   declare homeTeamId: number;
@@ -23,7 +23,7 @@ InferCreationAttributes<MatchesModel>> {
   declare inProgress: boolean;
 }
 
-MatchesModel.init({
+MatcheModel.init({
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -74,28 +74,28 @@ MatchesModel.init({
   * Associations 1:N devem ficar em uma das instâncias de modelo
   * */
 
-TeamModel.hasMany(MatchesModel, {
+TeamModel.hasMany(MatcheModel, {
   foreignKey: 'homeTeamId',
   as: 'homeMatches',
 });
 
-TeamModel.hasMany(MatchesModel, {
+TeamModel.hasMany(MatcheModel, {
   foreignKey: 'awayTeamId',
   as: 'awayMatches',
 });
 
-MatchesModel.belongsTo(TeamModel, {
+MatcheModel.belongsTo(TeamModel, {
   foreignKey: 'homeTeamId',
   as: 'homeTeam',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 
-MatchesModel.belongsTo(TeamModel, {
+MatcheModel.belongsTo(TeamModel, {
   foreignKey: 'awayTeamId',
   as: 'awayTeam',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 
-export default MatchesModel;
+export default MatcheModel;

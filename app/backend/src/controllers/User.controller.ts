@@ -14,7 +14,8 @@ export default class UserController {
   }
 
   static async loginRole(req: Request, res: Response) {
-    const { status, data } = await UserService.loginRole(req.body);
+    const { payload } = req.body;
+    const { status, data } = await UserService.loginRole(payload);
 
     return res.status(mapStatusHTTP(status)).json(data);
   }

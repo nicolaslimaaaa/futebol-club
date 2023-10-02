@@ -15,10 +15,23 @@ export default class MatcheController {
     return res.status(mapStatusHTTP(status)).json(data);
   }
 
-  async finish(req: Request, res: Response) {
+  async endGame(req: Request, res: Response) {
     const { id } = req.params;
 
-    const { status, data } = await this._matchService.finish(Number(id));
+    const { status, data } = await this._matchService.endGame(Number(id));
+
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
+
+  async changesMatchResult(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const newResult = {
+      id: Number(id),
+      ...req.body,
+    };
+
+    const { status, data } = await this._matchService.changesMatchResult(newResult);
 
     return res.status(mapStatusHTTP(status)).json(data);
   }

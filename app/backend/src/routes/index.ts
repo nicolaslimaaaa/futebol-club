@@ -10,5 +10,6 @@ router.use('/login', user);
 router.use('/login/role', user);
 router.use('/matches', matche);
 router.use('/matches/:id/finish', matche);
+router.use('/matches/:id', matche);
 
 export default router;

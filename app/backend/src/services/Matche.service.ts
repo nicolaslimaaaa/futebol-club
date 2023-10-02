@@ -8,7 +8,20 @@ export default class MatcheService {
     private _matcheModel: ModelStatic<MatcheModel> = MatcheModel,
   ) {}
 
-  async getAll(): Promise<ServiceResponse<MatcheModel[]>> {
+  async getAll(query: string): Promise<ServiceResponse<MatcheModel[]>> {
+    if (query === 'true' || query === 'false') {
+      const matches = await this._matcheModel.findAll({
+        include: [
+          { model: TeamModel, as: 'homeTeam', attributes: { exclude: ['id'] } },
+          { model: TeamModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
+        ],
+        where: { inProgress: Boolean(query !== 'false') },
+      });
+      console.log('Service', query);
+
+      return { status: 'SUCCESSFUL', data: matches };
+    }
+
     const matches = await this._matcheModel.findAll({
       include: [
         { model: TeamModel, as: 'homeTeam', attributes: { exclude: ['id'] } },

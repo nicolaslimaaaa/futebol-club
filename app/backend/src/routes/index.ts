@@ -9,5 +9,6 @@ router.use('/teams', team);
 router.use('/login', user);
 router.use('/login/role', user);
 router.use('/matches', matche);
+router.use('/matches/:id/finish', matche);
 
 export default router;

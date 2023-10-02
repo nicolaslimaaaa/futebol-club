@@ -31,4 +31,12 @@ export default class MatcheService {
 
     return { status: 'SUCCESSFUL', data: matches };
   }
+
+  async finish(id: number): Promise<ServiceResponse<{ message: string }>> {
+    await this._matcheModel.update({ inProgress: false }, {
+      where: { id },
+    });
+
+    return { status: 'SUCCESSFUL', data: { message: 'Finished' } };
+  }
 }

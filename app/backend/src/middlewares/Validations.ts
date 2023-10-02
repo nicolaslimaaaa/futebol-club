@@ -19,7 +19,10 @@ export default class Validations {
 
     try {
       const decoded = jwt.verify(token, envArgs.jwtSecret);
-      req.body = decoded;
+      req.body = {
+        ...req.body,
+        payload: decoded,
+      };
       next();
     } catch (_error) {
       res.status(401).json({ message: 'Token must be a valid token' });

@@ -7,7 +7,16 @@ import { app } from '../app';
 import MatcheModel from '../database/models/MatcheModel'
 
 import { Response } from 'superagent';
-import { matchesFromDb, messageForEqualsTeams, messageForTeamNotExists, newMatche, newMatcheWithEqualTeams, newMatcheWithTeamNotExists } from './mocks/matche.mock';
+import {
+  authorization,
+  matcheCreated,
+  matchesFromDb,
+  messageForEqualsTeams,
+  messageForTeamNotExists,
+  newMatche,
+  newMatcheWithEqualTeams,
+  newMatcheWithTeamNotExists
+} from './mocks/matche.mock';
 import TeamModel from '../database/models/TeamModel';
 
 chai.use(chaiHttp);
@@ -41,21 +50,21 @@ describe('POST /matches', () => {
   });
 
   it('Testa se é possível inserir uma partida no banco de dados com sucesso', async function () {    
-    const mockCreateReturn = MatcheModel.build(newMatche);
+    const mockCreateReturn = MatcheModel.build(matcheCreated);
     
     sinon.stub(MatcheModel, "create").resolves(mockCreateReturn);
 
-    const { status, body } = await chai.request(app).post('/matches');
+    const { status, body } = await chai.request(app).post('/matches').send(newMatche).set('Authorization', authorization);
 
     expect(status).to.be.equal(201);
-    expect(body).to.be.deep.equal(newMatche);
+    expect(body).to.be.deep.equal(matcheCreated);
   });
 
   it('Testa se não é possível inserir uma partida no banco de dados com times iguais', async function () {    
 
     const requestBody = newMatcheWithEqualTeams;
 
-    const { status, body } = await chai.request(app).post('/matches').send(requestBody);
+    const { status, body } = await chai.request(app).post('/matches').send(requestBody).set('Authorization', authorization);
 
     expect(status).to.be.equal(422);
     expect(body).to.be.deep.equal(messageForEqualsTeams);
@@ -66,7 +75,7 @@ describe('POST /matches', () => {
 
     const requestBody = newMatcheWithTeamNotExists;
 
-    const { status, body } = await chai.request(app).post('/matches').send(requestBody);
+    const { status, body } = await chai.request(app).post('/matches').send(requestBody).set('Authorization', authorization);
 
     expect(status).to.be.equal(404);
     expect(body).to.be.deep.equal(messageForTeamNotExists);

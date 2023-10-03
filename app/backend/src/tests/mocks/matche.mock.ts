@@ -673,13 +673,20 @@ export const matchesFromDb = [
   }
 ];
 
-export const newMatche = {
+export const matcheCreated = {
   "id": 1,
   "homeTeamId": 16,
   "homeTeamGoals": 2,
   "awayTeamId": 8,
   "awayTeamGoals": 2,
   "inProgress": true
+};
+
+export const newMatche = {
+  "homeTeamId": 16,
+  "homeTeamGoals": 2,
+  "awayTeamId": 8,
+  "awayTeamGoals": 2,
 };
 
 export const newMatcheWithEqualTeams = {
@@ -701,3 +708,7 @@ export const newMatcheWithTeamNotExists = {
 };
 
 export const messageForTeamNotExists = { "message": "There is no team with such id!" };
+
+export const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjk2MDE2NjU2fQ.50wNsjBatVKscjUekOQlq9GIyBI0FvOQ7sZzPC0swlA';
+
+export const authorization = `Bearer ${validToken}`

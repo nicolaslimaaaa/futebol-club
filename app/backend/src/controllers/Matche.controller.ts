@@ -35,4 +35,16 @@ export default class MatcheController {
 
     return res.status(mapStatusHTTP(status)).json(data);
   }
+
+  async newMatche(req: Request, res: Response) {
+    const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = req.body;
+
+    const dataNewMatche = {
+      homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals,
+    };
+
+    const { status, data } = await this._matchService.newMatche(dataNewMatche);
+
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }

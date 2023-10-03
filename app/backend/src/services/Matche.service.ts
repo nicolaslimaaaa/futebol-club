@@ -1,4 +1,5 @@
 import { ModelStatic } from 'sequelize';
+import INewMatche from '../Interfaces/matches/NewMatche';
 import NewResult from '../Interfaces/matches/MatchResult';
 import TeamModel from '../database/models/TeamModel';
 import MatcheModel from '../database/models/MatcheModel';
@@ -49,5 +50,23 @@ export default class MatcheService {
     });
 
     return { status: 'SUCCESSFUL', data: { message: 'Match result successfully changed!' } };
+  }
+
+  async newMatche(dataNewMatche: INewMatche): Promise<ServiceResponse<MatcheModel>> {
+    const { homeTeamId, awayTeamId } = dataNewMatche;
+
+    const homeTeamExist = await TeamModel.findByPk(homeTeamId);
+    const awayTeamExist = await TeamModel.findByPk(awayTeamId);
+
+    if (!homeTeamExist || !awayTeamExist) {
+      return {
+        status: 'NOT_FOUND',
+        data: { message: 'There is no team with such id!' },
+      };
+    }
+
+    const matche = await this._matcheModel.create({ ...dataNewMatche, inProgress: true });
+
+    return { status: 'CREATED', data: matche };
   }
 }

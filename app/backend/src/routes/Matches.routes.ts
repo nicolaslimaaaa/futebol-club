@@ -16,5 +16,11 @@ router.patch(
   Validations.authMiddleware,
   (req, res) => matcheController.changesMatchResult(req, res),
 );
+router.post(
+  '/',
+  Validations.authMiddleware,
+  Validations.validateEqualTeams,
+  (req, res) => matcheController.newMatche(req, res),
+);
 
 export default router;

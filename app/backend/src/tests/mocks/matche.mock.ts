@@ -671,4 +671,33 @@ export const matchesFromDb = [
       "teamName": "Bahia"
     }
   }
-]
+];
+
+export const newMatche = {
+  "id": 1,
+  "homeTeamId": 16,
+  "homeTeamGoals": 2,
+  "awayTeamId": 8,
+  "awayTeamGoals": 2,
+  "inProgress": true
+};
+
+export const newMatcheWithEqualTeams = {
+  "homeTeamId": 5,
+  "homeTeamGoals": 2,
+  "awayTeamId": 5,
+  "awayTeamGoals": 2,
+  "inProgress": true
+};
+
+export const messageForEqualsTeams = { "message": "It is not possible to create a match with two equal teams" };
+
+export const newMatcheWithTeamNotExists = {
+  "homeTeamId": 4,
+  "homeTeamGoals": 2,
+  "awayTeamId": 50,
+  "awayTeamGoals": 2,
+  "inProgress": true
+};
+
+export const messageForTeamNotExists = { "message": "There is no team with such id!" };

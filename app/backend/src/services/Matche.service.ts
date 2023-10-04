@@ -10,17 +10,24 @@ export default class MatcheService {
     private _matcheModel: ModelStatic<MatcheModel> = MatcheModel,
   ) {}
 
-  async getAll(query: string): Promise<ServiceResponse<MatcheModel[]>> {
-    if (query === 'true' || query === 'false') {
-      const matches = await this._matcheModel.findAll({
-        include: [
-          { model: TeamModel, as: 'homeTeam', attributes: { exclude: ['id'] } },
-          { model: TeamModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
-        ],
-        where: { inProgress: Boolean(query !== 'false') },
-      });
-      console.log('Service', query);
+  async getAllInProgressOrFinished(query: string) {
+    const matches = await this._matcheModel.findAll({
+      include: [
+        { model: TeamModel, as: 'homeTeam', attributes: { exclude: ['id'] } },
+        { model: TeamModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
+      ],
+      where: { inProgress: query !== 'false' },
+    });
 
+    return matches;
+  }
+
+  async getAll(query: string): Promise<ServiceResponse<MatcheModel[]>> {
+    const matcheInProgress = 'true';
+    const matcheFinished = 'false';
+
+    if (query === matcheInProgress || query === matcheFinished) {
+      const matches = await this.getAllInProgressOrFinished(query);
       return { status: 'SUCCESSFUL', data: matches };
     }
 
@@ -52,7 +59,8 @@ export default class MatcheService {
     return { status: 'SUCCESSFUL', data: { message: 'Match result successfully changed!' } };
   }
 
-  async newMatche(dataNewMatche: INewMatche): Promise<ServiceResponse<MatcheModel>> {
+  async newMatche(dataNewMatche: INewMatche): Promise<ServiceResponse<MatcheModel |
+  { message: string }>> {
     const { homeTeamId, awayTeamId } = dataNewMatche;
 
     const homeTeamExist = await TeamModel.findByPk(homeTeamId);

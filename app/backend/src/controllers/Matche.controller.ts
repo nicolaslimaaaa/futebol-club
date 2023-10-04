@@ -10,7 +10,7 @@ export default class MatcheController {
   async getAll(req: Request, res: Response) {
     const { inProgress } = req.query;
 
-    const { status, data } = await this._matchService.getAll(String(inProgress));
+    const { status, data } = await this._matchService.getAll(inProgress as string);
 
     return res.status(mapStatusHTTP(status)).json(data);
   }

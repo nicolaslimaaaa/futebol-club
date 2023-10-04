@@ -2,6 +2,7 @@ import { Router } from 'express';
 import team from './Team.routes';
 import user from './User.routes';
 import matche from './Matches.routes';
+import leaderboard from './Leaderboard.routes';
 
 const router = Router();
 
@@ -11,5 +12,6 @@ router.use('/login/role', user);
 router.use('/matches', matche);
 router.use('/matches/:id/finish', matche);
 router.use('/matches/:id', matche);
+router.use('/leaderboard/home', leaderboard);
 
 export default router;

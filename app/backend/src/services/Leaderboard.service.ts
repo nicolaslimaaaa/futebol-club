@@ -79,7 +79,11 @@ export default class Leaderboard {
     this._allTeams = (await this._teamService.getAll()).data;
     this._allMatches = (await this._matchService.getAll('false')).data;
 
-    const infos = this.getInfosTeam();
+    const infos = this.getInfosTeam()
+      .sort((a, b) => b.goalsFavor - a.goalsFavor)
+      .sort((a, b) => b.goalsBalance - a.goalsBalance)
+      .sort((a, b) => b.totalVictories - a.totalVictories)
+      .sort((a, b) => b.totalPoints - a.totalPoints);
 
     return { status: 'SUCCESSFUL', data: infos };
   }

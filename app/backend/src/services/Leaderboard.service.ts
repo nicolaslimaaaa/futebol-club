@@ -77,7 +77,7 @@ export default class Leaderboard {
 
   async getInfosHomeTeam(): Promise<ServiceResponse<ILeaderboard[]>> {
     this._allTeams = (await this._teamService.getAll()).data;
-    this._allMatches = (await this._matchService.getAll('true')).data;
+    this._allMatches = (await this._matchService.getAll('false')).data;
 
     const infos = this.getInfosTeam();
 

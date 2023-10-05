@@ -8,10 +8,7 @@ const router = Router();
 
 router.use('/teams', team);
 router.use('/login', user);
-router.use('/login/role', user);
 router.use('/matches', matche);
-router.use('/matches/:id/finish', matche);
-router.use('/matches/:id', matche);
-router.use('/leaderboard/home', leaderboard);
+router.use('/leaderboard', leaderboard);
 
 export default router;

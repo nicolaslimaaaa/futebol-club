@@ -12,6 +12,18 @@ export default class Leaderboard {
   private _matchesHomeTeam: MatcheModel[] = [];
   private _matchesAwayTeam: MatcheModel[] = [];
   private _typeTeam = '';
+  private _infos: ILeaderboard = {
+    name: '',
+    totalPoints: 0,
+    totalGames: 0,
+    totalVictories: 0,
+    totalDraws: 0,
+    totalLosses: 0,
+    goalsFavor: 0,
+    goalsOwn: 0,
+    goalsBalance: 0,
+    efficiency: 0,
+  };
 
   constructor(
     private _matchService = new MatcheService(),
@@ -117,7 +129,7 @@ export default class Leaderboard {
     };
   }
 
-  getInfosTeam() {
+  getInfos() {
     return this._allTeams.reduce((arrayInfos, team) => {
       this.getAllMatches(team);
       const infos = this.getClassification(team.teamName);
@@ -131,8 +143,44 @@ export default class Leaderboard {
     this._allMatches = (await this._matchService.getAll('false')).data;
     this._typeTeam = typeTeam;
 
-    const infos = this.getInfosTeam()
+    const infos = this.getInfos()
       .sort((a, b) => b.goalsFavor - a.goalsFavor)
+      .sort((a, b) => b.goalsBalance - a.goalsBalance)
+      .sort((a, b) => b.totalVictories - a.totalVictories)
+      .sort((a, b) => b.totalPoints - a.totalPoints);
+
+    return { status: 'SUCCESSFUL', data: infos };
+  }
+
+  static calculateInfos(homeTeam: ILeaderboard, infoAwayTeams: ILeaderboard) {
+    const totalPoints = homeTeam.totalPoints + infoAwayTeams.totalPoints;
+    const totalGames = homeTeam.totalGames + infoAwayTeams.totalGames;
+    const efficiency = Number(((totalPoints / (totalGames * 3)) * 100).toFixed(2));
+
+    return {
+      name: homeTeam.name,
+      totalPoints,
+      totalGames,
+      totalVictories: homeTeam.totalVictories + infoAwayTeams.totalVictories,
+      totalDraws: homeTeam.totalDraws + infoAwayTeams.totalDraws,
+      totalLosses: homeTeam.totalLosses + infoAwayTeams.totalLosses,
+      goalsFavor: homeTeam.goalsFavor + infoAwayTeams.goalsFavor,
+      goalsOwn: homeTeam.goalsOwn + infoAwayTeams.goalsOwn,
+      goalsBalance: homeTeam.goalsBalance + infoAwayTeams.goalsBalance,
+      efficiency,
+    };
+  }
+
+  async getInfosComplete(): Promise<ServiceResponse<ILeaderboard[]>> {
+    const infosHome = (await this.getInfosTeams('home')).data;
+    const infosAway = (await this.getInfosTeams('away')).data;
+
+    const infos = infosHome.map((homeTeam) => {
+      const infoAwayTeams = infosAway
+        .find((awayTeam) => awayTeam.name === homeTeam.name);
+
+      return Leaderboard.calculateInfos(homeTeam, infoAwayTeams || this._infos);
+    }).sort((a, b) => b.goalsFavor - a.goalsFavor)
       .sort((a, b) => b.goalsBalance - a.goalsBalance)
       .sort((a, b) => b.totalVictories - a.totalVictories)
       .sort((a, b) => b.totalPoints - a.totalPoints);
